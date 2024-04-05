@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<AnchorPane prefHeight="600.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.accueilController">
+    <children>
+        <AnchorPane layoutX="123.0" layoutY="36.0" prefHeight="600.0" prefWidth="1100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <BorderPane id="side" layoutX="120.0" layoutY="100.0" prefHeight="600.0" prefWidth="1100.0" stylesheets="@../Css/styles.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <left>
+                        <AnchorPane prefHeight="555.0" prefWidth="211.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <AnchorPane id="side" fx:id="side" layoutX="6.0" layoutY="62.0" prefHeight="554.4" prefWidth="211.2" styleClass="side" stylesheets="@../Css/styles.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <Line fx:id="ligne" endX="100.0" layoutX="109.0" layoutY="170.0" startX="-100.0" />
+                                        <Button fx:id="btnhome1" layoutX="20.0" layoutY="369.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="162.0" text="COURS" />
+                                        <Button fx:id="btnhome11" layoutX="19.0" layoutY="296.0" mnemonicParsing="false" onAction="#showCrudView" prefHeight="38.0" prefWidth="162.0" text="COACH" />
+                                        <Button fx:id="btnhome111" alignment="BOTTOM_CENTER" layoutX="16.0" layoutY="220.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="164.0" text="CLIENT" />
+                                        <Button fx:id="btnhome1111" layoutX="24.0" layoutY="439.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="158.0" text="PUBLICATION" />
+                                        <Label fx:id="LabelWELCOME" layoutX="59.0" layoutY="132.0" prefHeight="22.0" prefWidth="114.0" text="WELCOME" textFill="WHITE">
+                                            <font>
+                                                <Font size="20.0" />
+                                            </font>
+                                        </Label>
+                                        <ImageView fx:id="image1" fitHeight="35.0" fitWidth="35.0" layoutX="24.0" layoutY="222.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../../java/com/example/projet/img/usersss.png" />
+                                            </image>
+                                        </ImageView>
+                                        <ImageView fx:id="image3" fitHeight="35.0" fitWidth="35.0" layoutX="24.0" layoutY="371.0" pickOnBounds="true" preserveRatio="true">
+                                            <Image url="@../../java/com/example/projet/img/courss.png" />
+                                        </ImageView>
+                                        <ImageView fx:id="image5" fitHeight="35.0" fitWidth="35.0" layoutX="24.0" layoutY="441.0" pickOnBounds="true" preserveRatio="true">
+                                            <Image url="@../../java/com/example/projet/img/publication.png" />
+                                        </ImageView>
+                                        <ImageView fx:id="image0" fitHeight="93.0" fitWidth="121.0" layoutX="57.0" layoutY="39.0" pickOnBounds="true" preserveRatio="true">
+                                            <Image url="@../../java/com/example/projet/img/adminnnnnn.png" />
+                                        </ImageView>
+                                        <ButtonBar layoutX="-2.0" layoutY="511.0" prefHeight="40.0" prefWidth="200.0" />
+                                        <ImageView fx:id="image2" fitHeight="35.0" fitWidth="35.0" layoutX="24.0" layoutY="300.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../../java/com/example/projet/img/coach.jpg" />
+                                            </image>
+                                        </ImageView>
+                                    </children>
+                                </AnchorPane>
+                            </children>
+                        </AnchorPane>
+                    </left>
+                    <center>
+                        <AnchorPane fx:id="crudContainer" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                    </center>
+                </BorderPane>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>
