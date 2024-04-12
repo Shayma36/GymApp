@@ -2,8 +2,7 @@ package com.example.projet;
 
 import com.example.projet.Models.Publication;
 
-import com.example.projet.utils.DataBase;
-import javafx.collections.FXCollections;
+import com.example.projet.Services.ServicePublication;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,7 +11,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
@@ -22,9 +20,12 @@ import java.util.ResourceBundle;
 
 public class PubController implements Initializable {
 
-    Connection cnx =null;
-    PreparedStatement pst =null;
-    ResultSet rs =null;
+    private final ServicePublication publicationService = new ServicePublication();
+
+
+    Connection cnx = null;
+    PreparedStatement pst = null;
+    ResultSet rs = null;
 
     @FXML
     private Button btnClear;
@@ -37,6 +38,9 @@ public class PubController implements Initializable {
 
     @FXML
     private Button btnUpdate;
+
+    @FXML
+    private TextField tTitle;
 
     @FXML
     private TextField tContent;
@@ -53,46 +57,26 @@ public class PubController implements Initializable {
     private TableColumn<Publication, Integer> colIdPub;
 
     @FXML
+    private TableColumn<Publication, String> colTitle;
+
+    @FXML
     private TableView<Publication> table;
-    int idPub=0;
+    int idPub = 0;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-          showPublications();
+        showPublications();
     }
 
-    public ObservableList<Publication> getPublications(){
-        ObservableList<Publication> publications= FXCollections.observableArrayList();
-        String query="select * from Publication";
-        cnx= DataBase.getInstance().getCnx();
-        try{
-            pst=cnx.prepareStatement(query);
-            rs=pst.executeQuery();
-            while(rs.next()){
 
-                Publication publication = new Publication();
-                publication.setIdPub(rs.getInt("idPub"));
-                publication.setContent(rs.getString("content"));
-                publication.setDatePub(rs.getTimestamp("datePub"));
-                publications.add(publication);
-
-
-            }
-        }catch(SQLException e){
-            throw new RuntimeException(e);
-
-        }
-        return publications;
-
-    }
-
-    public void showPublications(){
-        ObservableList<Publication> list=getPublications();
+    public void showPublications() {
+        ObservableList<Publication> list = publicationService.afficher();
         table.getItems().clear();
         table.setItems(list);
-        colIdPub.setCellValueFactory(new PropertyValueFactory<Publication,Integer>("idPub"));
-        colContent.setCellValueFactory(new PropertyValueFactory<Publication,String>("content"));
-        colDatePub.setCellValueFactory(new PropertyValueFactory<Publication,Timestamp>("datePub"));
+        colIdPub.setCellValueFactory(cellData -> cellData.getValue().idPubProperty().asObject());
+        colTitle.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
+        colContent.setCellValueFactory(cellData -> cellData.getValue().contentProperty());
+        colDatePub.setCellValueFactory(cellData -> cellData.getValue().datePubProperty());
     }
 
     @FXML
@@ -104,72 +88,57 @@ public class PubController implements Initializable {
 
     @FXML
     void createPublication(ActionEvent event) {
-        String insert="insert into publication (content, datePub) values( ?,NOW())";
-        cnx=DataBase.getInstance().getCnx();
-        try{
-            pst=cnx.prepareStatement(insert);
-            pst.setString(1,tContent.getText());
-//            pst.setString(2,tDatePub.getText());
-            pst.executeUpdate();
-            clear();
-            showPublications();
-        }catch(SQLException e){
-            throw new RuntimeException(e);
-        }
+        Publication publication = new Publication();
+        publication.setTitle(tTitle.getText());
+        publication.setContent(tContent.getText());
+        publicationService.ajouter(publication);
+        clear();
+        showPublications();
     }
+
     @FXML
     void getData(MouseEvent event) {
         Publication publication = table.getSelectionModel().getSelectedItem();
         if (publication != null) {
             idPub = publication.getIdPub();
             tContent.setText(publication.getContent());
+            tTitle.setText(publication.getTitle());
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String formattedDate = dateFormat.format(publication.getDatePub());
             tDatePub.setText(formattedDate);
             btnSave.setDisable(true);
-        }}
+        }
+    }
 
-    void clear(){
+    void clear() {
         tContent.setText(null);
         tDatePub.setText(null);
+        tTitle.setText(null);
         btnSave.setDisable(false);
 
     }
+
     @FXML
     void deletePublication(ActionEvent event) {
-        String delete="delete from publication where idPub=?";
-        cnx=DataBase.getInstance().getCnx();
-        try{
-            pst=cnx.prepareStatement(delete);
-            pst.setInt(1, idPub);
-            pst.executeUpdate();
+        Publication publication = table.getSelectionModel().getSelectedItem();
+        if (publication != null) {
+            publicationService.supprimer(publication);
             clear();
             showPublications();
-
-        }catch(SQLException e){
-            throw new RuntimeException(e);
         }
-
-
     }
+
 
     @FXML
     void updatePublication(ActionEvent event) {
-        String update="update Publication set content =? where idPub=?";
-        cnx=DataBase.getInstance().getCnx();
-        try{
-            pst=cnx.prepareStatement(update);
-            pst.setString(1,tContent.getText());
-            pst.setInt(2, idPub);
-            pst.executeUpdate();
+        Publication publication = table.getSelectionModel().getSelectedItem();
+        if (publication != null) {
+            publication.setContent(tContent.getText());
+            publication.setTitle(tTitle.getText());
+            publicationService.modifier(publication);
             clear();
             showPublications();
-        }catch(SQLException e){
-            throw new RuntimeException(e);
         }
-
     }
-
-
 }
 

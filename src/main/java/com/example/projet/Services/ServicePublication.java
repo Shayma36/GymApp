@@ -3,6 +3,8 @@ package com.example.projet.Services;
 import com.example.projet.interfaces.IService;
 import com.example.projet.Models.Publication;
 import com.example.projet.utils.DataBase;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,9 +18,10 @@ public class ServicePublication implements IService<Publication> {
     @Override
     public void ajouter(Publication publication) {
         try {
-            String requete = "INSERT INTO publication (content, datePub) VALUES (?, NOW())";
+            String requete = "INSERT INTO publication (title, content, datePub) VALUES (?,?, NOW())";
             PreparedStatement pst = cnx.prepareStatement(requete);
-            pst.setString(1, publication.getContent());
+            pst.setString(1, publication.getTitle());
+            pst.setString(2, publication.getContent());
             pst.executeUpdate();
             System.out.println("Publication ajoutée !");
         } catch (SQLException ex) {
@@ -43,20 +46,20 @@ public class ServicePublication implements IService<Publication> {
 @Override
 public void modifier(Publication publication) {
     try {
-        String requete = "UPDATE publication SET content=? WHERE idPub = ?";
+        String requete = "UPDATE publication SET content=?, title =? WHERE idPub = ?";
         PreparedStatement pst = cnx.prepareStatement(requete);
         pst.setString(1, publication.getContent());
-        pst.setInt(2, publication.getIdPub());
+        pst.setString(2, publication.getTitle());
+        pst.setInt(3, publication.getIdPub());
         pst.executeUpdate();
         System.out.println("Publication modifiée !");
     } catch (SQLException ex) {
         System.err.println(ex.getMessage());
     }
 }
-//
     @Override
-    public ArrayList<Publication> afficher() {
-        ArrayList<Publication> publications = new ArrayList<>();
+    public ObservableList<Publication> afficher() {
+        ObservableList<Publication> publications = FXCollections.observableArrayList();
         try {
             String requete = "SELECT * FROM publication";
             PreparedStatement pst = cnx.prepareStatement(requete);
@@ -64,6 +67,7 @@ public void modifier(Publication publication) {
             while (rs.next()) {
                 Publication publication = new Publication();
                 publication.setIdPub(rs.getInt("idPub"));
+                publication.setTitle(rs.getString("title"));
                 publication.setContent(rs.getString("content"));
                 publication.setDatePub(rs.getTimestamp("datePub"));
                 publications.add(publication);
@@ -72,8 +76,28 @@ public void modifier(Publication publication) {
             System.err.println(ex.getMessage());
         }
         return publications;
-
     }
+
+    public Publication getPublicationById(int id) {
+        try {
+            String query = "SELECT * FROM publication WHERE idPub = ?";
+            PreparedStatement pst = cnx.prepareStatement(query);
+            pst.setInt(1, id);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                Publication publication = new Publication();
+                publication.setIdPub(rs.getInt("idPub"));
+                publication.setTitle(rs.getString("title"));
+                publication.setContent(rs.getString("content"));
+                publication.setDatePub(rs.getTimestamp("datePub"));
+                return publication;
+            }
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return null; // En cas d'erreur ou si aucune publication n'est trouvée
+    }
+
 
 
 }

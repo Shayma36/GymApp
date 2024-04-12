@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="670.0" prefWidth="779.0" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projet.ComController">
+    <children>
+        <VBox prefHeight="200.0" prefWidth="100.0" />
+        <VBox layoutX="14.0" layoutY="200.0" prefHeight="166.0" prefWidth="336.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="200.0">
+            <children>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ID Publication" />
+                <TextField fx:id="tIdPub" prefWidth="314.0" />
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="description" />
+                <TextField fx:id="tDescription" prefWidth="314.0" />
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="dateCom" />
+                <TextField fx:id="tDateCom" prefWidth="314.0" />
+
+            </children>
+        </VBox>
+        <TableView fx:id="table" layoutX="389.0" layoutY="183.0" onMouseClicked="#getData" prefHeight="200.0" prefWidth="358.0" AnchorPane.rightAnchor="31.600000000000023" AnchorPane.topAnchor="183.0">
+            <columns>
+                <TableColumn fx:id="colIdComment" prefWidth="77.5999755859375" text="idComment" />
+                <TableColumn fx:id="colDescription" prefWidth="107.99991607666016" text="description" />
+                <TableColumn fx:id="colDateCom" prefWidth="94.39984130859375" text="dateCom" />
+                <TableColumn fx:id="colIdPub" prefWidth="77.60003662109375" text="idPub" />
+            </columns>
+        </TableView>
+        <Label alignment="CENTER" layoutX="240.0" layoutY="34.0" prefHeight="35.0" prefWidth="388.0" styleClass="title" stylesheets="@../css/styles.css" text="GESTION COMMENTAIRES" />
+        <ButtonBar layoutX="147.0" layoutY="416.0" prefHeight="40.0" prefWidth="466.0">
+            <buttons>
+                <Button fx:id="btnSave" mnemonicParsing="false" onAction="#createCommentaire" text="Save" />
+                <Button fx:id="btnUpdate" layoutX="401.0" layoutY="17.0" mnemonicParsing="false" onAction="#updateCommentaire" text="Update" />
+                <Button fx:id="btnDelete" layoutX="401.0" layoutY="17.0" mnemonicParsing="false" onAction="#deleteCommentaire" text="Delete" />
+                <Button fx:id="btnClear" layoutX="401.0" layoutY="17.0" mnemonicParsing="false" onAction="#clearField" text="Clear" />
+            </buttons>
+        </ButtonBar>
+    </children>
+
+</AnchorPane>
