@@ -10,20 +10,16 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane onMouseClicked="#getData" prefHeight="597.0" prefWidth="868.0"
-            styleClass="form_container" stylesheets="@../css/styles.css"
-            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.projet.PubController">
+<AnchorPane onMouseClicked="#getData" prefHeight="597.0" prefWidth="868.0" styleClass="form_container" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projet.PubController">
    <children>
       <VBox prefHeight="200.0" prefWidth="100.0" />
-      <VBox layoutX="16.0" layoutY="110.0" prefHeight="282.0" prefWidth="336.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="110.0">
+      <VBox layoutX="14.0" layoutY="155.0" prefHeight="214.0" prefWidth="336.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="155.0">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Title" />
             <TextField fx:id="tTitle" prefWidth="314.0" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Content" />
             <TextField fx:id="tContent" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="datePub" />
-            <TextField fx:id="tDatePub" />
+
 
          </children>
       </VBox>
@@ -35,14 +31,15 @@
             <TableColumn fx:id="colTitle" prefWidth="113.5999755859375" text="title" />
         </columns>
       </TableView>
-      <Label alignment="CENTER" layoutX="240.0" layoutY="34.0" prefHeight="35.0" prefWidth="388.0" styleClass="title" stylesheets="@../css/styles.css" text="GESTION PUBLICATION" />
-      <ButtonBar layoutX="147.0" layoutY="416.0" prefHeight="40.0" prefWidth="466.0">
+      <Label alignment="CENTER" layoutX="240.0" layoutY="43.0" prefHeight="35.0" prefWidth="388.0" styleClass="title" stylesheets="@../css/styles.css" text="GESTION DES PUBLICATIONS" />
+      <ButtonBar layoutX="182.0" layoutY="418.0" prefHeight="40.0" prefWidth="466.0">
         <buttons>
-          <Button fx:id="btnSave" mnemonicParsing="false" onAction="#createPublication" text="Save" />
-            <Button fx:id="btnUpdate" layoutX="401.0" layoutY="17.0" mnemonicParsing="false" onAction="#updatePublication" text="Update" />
-            <Button fx:id="btnDelete" layoutX="401.0" layoutY="17.0" mnemonicParsing="false" onAction="#deletePublication" text="Delete" />
-            <Button fx:id="btnClear" layoutX="401.0" layoutY="17.0" mnemonicParsing="false" onAction="#clearField" text="Clear" />
+          <Button fx:id="btnSave" mnemonicParsing="false" onAction="#createPublication" text="Ajouter" />
+            <Button fx:id="btnUpdate" layoutX="401.0" layoutY="17.0" mnemonicParsing="false" onAction="#updatePublication" text="Modifier" />
+            <Button fx:id="btnDelete" layoutX="401.0" layoutY="17.0" mnemonicParsing="false" onAction="#deletePublication" text="Supprimer" />
+            <Button fx:id="btnClear" layoutX="401.0" layoutY="17.0" mnemonicParsing="false" onAction="#clearField" text="Actualiser" />
         </buttons>
       </ButtonBar>
+      <Button fx:id="gererCommentaires" layoutX="729.0" layoutY="528.0" mnemonicParsing="false" onAction="#gererCommentaires" prefHeight="40.0" prefWidth="257.0" styleClass="title" text="Suivant" AnchorPane.leftAnchor="729.0" AnchorPane.topAnchor="528.0" />
    </children>
 </AnchorPane>

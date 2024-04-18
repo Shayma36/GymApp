@@ -15,6 +15,9 @@ public class Publication {
     private final StringProperty content = new SimpleStringProperty();
     private final ObjectProperty<Timestamp> datePub = new SimpleObjectProperty<>();
 
+    public Publication(int id, String title, String content) {
+
+    }
     public int getIdPub() {
         return idPub.get();
     }
@@ -86,6 +89,5 @@ public class Publication {
                 ", datePub=" + datePub +
                 '}';
     }
-
 
 }

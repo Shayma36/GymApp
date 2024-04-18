@@ -1,0 +1,37 @@
+/* styles.css */
+
+/* Style des étiquettes Label */
+.label {
+    -fx-font-size: 1.2em; /* Taille de police réduite */
+    -fx-text-fill: #000000; /* Couleur de texte noire */
+    -fx-font-weight: bold; /* Gras */
+}
+
+/* Style des zones de texte TextArea */
+.text-area {
+    -fx-font-size: 1.2em; /* Taille de police */
+    -fx-background-color: #ffffff; /* Couleur de fond */
+    -fx-effect: dropshadow(three-pass-box, #aaaaaa, 3, 0, 0, 3); /* Effet d'ombre */
+}
+
+/* Style des champs de texte TextField */
+.text-field {
+    -fx-pref-height: 35; /* Hauteur préférée */
+    -fx-background-color: #ffffff; /* Couleur de fond */
+    -fx-font-size: 1.3em; /* Taille de police */
+    -fx-effect: dropshadow(three-pass-box, #aaaaaa, 3, 0, 0, 3); /* Effet d'ombre */
+}
+
+/* Style des boutons Button */
+.button {
+    -fx-background-color: linear-gradient(to right, #0a3353, #016a91); /* Dégradé de couleur */
+    -fx-effect: dropshadow(three-pass-box, #aaaaaa, 3, 0, 0, 3); /* Effet d'ombre */
+    -fx-pref-width: 80; /* Largeur préférée réduite */
+    -fx-font-family: "Calibri Light"; /* Famille de police */
+    -fx-text-fill: #ffffff; /* Couleur du texte */
+    -fx-font-size: 1.1em; /* Taille de police encore réduite */
+}
+
+.button:hover {
+    -fx-cursor: hand; /* Curseur au survol */
+}

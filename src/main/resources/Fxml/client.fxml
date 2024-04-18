@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="672.0" prefWidth="1037.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlleur.clientController">
+   <children>
+      <TableView fx:id="tabe" layoutX="1.0" layoutY="117.0" onMouseClicked="#getData" prefHeight="438.0" prefWidth="1075.0" stylesheets="@../CSS/Style.css">
+         <columns>
+            <TableColumn fx:id="colId" prefWidth="219.0" text="Id" />
+            <TableColumn fx:id="colNom" prefWidth="216.0" text="Nom" />
+            <TableColumn fx:id="colHeure" prefWidth="187.0" text="Heure" />
+            <TableColumn fx:id="colCoach" prefWidth="189.0" text="Coach" />
+            <TableColumn fx:id="colnbplace" prefWidth="263.0" text="Nombre de place" />
+         </columns>
+      </TableView>
+      <ButtonBar layoutX="803.0" layoutY="564.0" prefHeight="40.0" prefWidth="200.0" />
+      <TextField fx:id="filter" layoutX="801.0" layoutY="63.0" onKeyReleased="#rechercherCours" prefHeight="31.0" prefWidth="247.0" promptText="rechercher" />
+    <Button fx:id="reserver" layoutX="903.0" layoutY="580.0" mnemonicParsing="false" onAction="#handleReservation" prefHeight="49.0" prefWidth="133.0" stylesheets="@../CSS/Style.css" text="Réserver" />
+      <Text fill="#2212d7" layoutX="438.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Liste des cours " textAlignment="CENTER" wrappingWidth="200.0000073313713">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>

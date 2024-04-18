@@ -1,0 +1,25 @@
+
+/* Style pour les boutons */
+.button {
+    -fx-background-color: #2196F3; /* Couleur bleue */
+    -fx-text-fill: white; /* Couleur du texte en blanc */
+    -fx-font-size: 14px; /* Taille de la police */
+}
+
+/* Style pour la TableView */
+.table-view {
+    -fx-background-color: white; /* Couleur de fond blanc */
+    -fx-table-cell-border-color: #CCC; /* Couleur de la bordure de la cellule */
+}
+
+.table-column {
+    -fx-alignment: CENTER; /* Alignement central du contenu des colonnes */
+    -fx-font-size: 14px;
+    /* Taille de la police */
+
+}
+.table-view .column-header {
+    -fx-background-color: #2196F3; /* Couleur de fond */
+    -fx-text-fill: white; /* Couleur du texte */
+    -fx-font-size: 14px; /* Taille de la police */
+}

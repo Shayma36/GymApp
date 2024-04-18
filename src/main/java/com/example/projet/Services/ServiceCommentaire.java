@@ -55,22 +55,12 @@ public class ServiceCommentaire implements IService<Commentaire> {
         }
     }
 
-    @Override
     public void modifier(Commentaire commentaire) {
         try {
             String requete = "UPDATE commentaire SET description=?, dateCom=now(), idPub=? WHERE idComment=?";
             PreparedStatement pst = cnx.prepareStatement(requete);
             pst.setString(1, commentaire.getDescription());
-
-            // Vérifiez si la publication associée n'est pas null avant de définir idPub
-            Publication pub = commentaire.getPub();
-            if (pub != null) {
-                pst.setInt(2, pub.getIdPub());
-            } else {
-                // Gérez le cas où la publication est null en lançant une exception ou en affichant un message d'erreur
-                throw new IllegalArgumentException("Le commentaire doit être associé à une publication.");
-            }
-
+            pst.setInt(2, commentaire.getPub().getIdPub());
             pst.setInt(3, commentaire.getIdComment());
             pst.executeUpdate();
             System.out.println("Commentaire modifié !");
@@ -78,6 +68,20 @@ public class ServiceCommentaire implements IService<Commentaire> {
             System.err.println(ex.getMessage());
         }
     }
+
+    public void updateDescription(int commentId, String newDescription) {
+        try {
+            String requete = "UPDATE commentaire SET description=? WHERE idComment=?";
+            PreparedStatement pst = cnx.prepareStatement(requete);
+            pst.setString(1, newDescription);
+            pst.setInt(2, commentId);
+            pst.executeUpdate();
+            System.out.println("Description du commentaire mise à jour !");
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
+
 
 
 

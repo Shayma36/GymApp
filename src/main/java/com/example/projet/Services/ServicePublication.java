@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ServicePublication implements IService<Publication> {
     Connection cnx = DataBase.getInstance().getCnx();
@@ -97,8 +98,6 @@ public void modifier(Publication publication) {
         }
         return null; // En cas d'erreur ou si aucune publication n'est trouvée
     }
-
-
 
 }
 

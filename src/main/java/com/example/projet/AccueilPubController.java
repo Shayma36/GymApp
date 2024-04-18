@@ -4,9 +4,12 @@ import com.example.projet.Models.Commentaire;
 import com.example.projet.Models.Publication;
 import com.example.projet.Services.ServiceCommentaire;
 import com.example.projet.Services.ServicePublication;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -17,9 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class AccueilPubController implements Initializable {
 
@@ -38,10 +39,36 @@ public class AccueilPubController implements Initializable {
     private Button btnAddComment;
 
     @FXML
+    private Button btnAddPublication;
+
+    @FXML
+    private Button btnDeleteComment;
+
+    @FXML
+    private Button btnDeletePublication;
+
+    @FXML
+    private Button btnEditComment;
+
+    @FXML
+    private Button btnEditPublication;
+
+    @FXML
+    private Button btnimprimerPublication;
+    @FXML
+    private Button btnRefresh;
+
+    @FXML
     private VBox commentBox;
 
     @FXML
     private VBox publicationBox;
+
+    @FXML
+    private RadioButton radioAsc;
+
+    @FXML
+    private RadioButton radioDesc;
 
     @FXML
     private TextArea txtComment;
@@ -50,37 +77,67 @@ public class AccueilPubController implements Initializable {
     private TextArea txtContent;
 
     @FXML
+    private TextField txtSearch;
+
+    @FXML
     private TextArea txtTitle;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         loadPublications();
+        txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+            filterPublications(newValue);
+        });
+
+        radioAsc.setSelected(true);
+
+
+        radioAsc.setOnAction(event -> loadPublications());
+        radioDesc.setOnAction(event -> loadPublications());
+
+        loadPublications();
+
+
 
     }
+@FXML
+private void loadPublications() {
+    // Votre logique pour charger les publications depuis la base de données
+    publicationBox.getChildren().clear(); // Clear existing publications
+    List<Publication> publications = publicationService.afficher();
 
-    private void loadPublications() {
-        publicationBox.getChildren().clear(); // Clear existing publications
-        for (Publication publication : publicationService.afficher()) {
-            // Create a new TextArea to display the publication
-            TextArea publicationTextArea = new TextArea();
-            publicationTextArea.setEditable(false);
-            publicationTextArea.setWrapText(true);
-            publicationTextArea.setText("Titre: " + publication.getTitle() + "\n\n" +
-                    "Contenu: " + publication.getContent() + "\n\n" +
-                    "Date de publication: " + publication.getDatePub());
-
-            // Add an event handler to display the details and comments of the selected publication
-            publicationTextArea.setOnMouseClicked(event -> {
-                selectedPublication = publication;
-                displayPublicationDetails(publication);
-                displayPublicationComments(publication);
-            });
-
-            // Add the publication TextArea to the VBox
-            publicationBox.getChildren().add(publicationTextArea);
-        }
+    // Déterminez l'ordre de tri en fonction de la sélection de l'utilisateur
+    if (radioAsc.isSelected()) {
+        // Tri par date ascendant
+        publications.sort(Comparator.comparing(Publication::getDatePub));
+    } else {
+        // Tri par date descendant
+        publications.sort(Comparator.comparing(Publication::getDatePub).reversed());
     }
+
+    for (Publication publication : publications) {
+        // Create a new TextArea to display the publication
+        TextArea publicationTextArea = new TextArea();
+        publicationTextArea.setEditable(false);
+        publicationTextArea.setWrapText(true);
+        publicationTextArea.setText("Titre: " + publication.getTitle() + "\n\n" +
+                "Contenu: " + publication.getContent() + "\n\n" +
+                "Date de publication: " + publication.getDatePub());
+
+        // Add an event handler to display the details and comments of the selected publication
+        publicationTextArea.setOnMouseClicked(event -> {
+            selectedPublication = publication;
+            displayPublicationDetails(publication);
+            displayPublicationComments(publication);
+        });
+
+        // Add the publication TextArea to the VBox
+        publicationBox.getChildren().add(publicationTextArea);
+    }
+}
+
 
     private void displayPublicationDetails(Publication publication) {
         // Afficher les détails de la publication sélectionnée dans les champs correspondants
@@ -128,6 +185,10 @@ public class AccueilPubController implements Initializable {
 
             // Effacer le champ de saisie du commentaire
             txtComment.clear();
+            showAlert("Succès", "Le commentaire a été ajouté avec succès.");
+        }else {
+            // Afficher un message d'erreur si la publication n'est pas sélectionnée ou si le champ de commentaire est vide
+            showAlert("Erreur", "Veuillez sélectionner une publication et saisir un commentaire.");
         }
     }
 
@@ -173,10 +234,7 @@ public class AccueilPubController implements Initializable {
             // Si l'utilisateur appuie sur le bouton OK et fournit un nouveau contenu, mettre à jour le commentaire
             result.ifPresent(newContent -> {
                 // Mettre à jour le contenu du commentaire
-                selectedComment.setDescription(newContent);
-
-                // Appeler la méthode de service pour modifier le commentaire dans la base de données
-                commentaireService.modifier(selectedComment);
+                commentaireService.updateDescription(selectedComment.getIdComment(), newContent);
 
                 // Actualiser l'affichage des commentaires pour refléter les modifications
                 displayPublicationComments(selectedPublication);
@@ -190,6 +248,7 @@ public class AccueilPubController implements Initializable {
             error.showAndWait();
         }
     }
+
 
 
 
@@ -314,6 +373,102 @@ public class AccueilPubController implements Initializable {
             // Actualisez l'affichage des publications pour exclure la publication supprimée
             loadPublications();
         }
+    }
+    // Méthode utilitaire pour afficher une boîte de dialogue d'alerte
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    // Méthode utilitaire pour afficher une boîte de dialogue de confirmation
+    private boolean showConfirmationDialog(String title, String message) {
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmation.setTitle(title);
+        confirmation.setHeaderText(null);
+        confirmation.setContentText(message);
+
+        Optional<ButtonType> result = confirmation.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
+    private void filterPublications(String searchText) {
+        ObservableList<Publication> filteredPublications = FXCollections.observableArrayList();
+        // Parcourez toutes les publications
+        for (Publication publication : publicationService.afficher()) {
+            // Vérifiez si le titre ou le contenu de la publication contient le texte de recherche
+            if (publication.getTitle().toLowerCase().contains(searchText.toLowerCase()) ||
+                    publication.getContent().toLowerCase().contains(searchText.toLowerCase())) {
+                // Si c'est le cas, ajoutez cette publication à la liste filtrée
+                filteredPublications.add(publication);
+            }
+        }
+        // Effacez la boîte de publication actuelle et ajoutez les publications filtrées
+        publicationBox.getChildren().clear();
+        for (Publication publication : filteredPublications) {
+            TextArea publicationTextArea = createPublicationTextArea(publication);
+            publicationBox.getChildren().add(publicationTextArea);
+        }
+    }
+
+    private TextArea createPublicationTextArea(Publication publication) {
+        TextArea publicationTextArea = new TextArea();
+        publicationTextArea.setEditable(false);
+        publicationTextArea.setWrapText(true);
+        publicationTextArea.setText("Titre: " + publication.getTitle() + "\n\n" +
+                "Contenu: " + publication.getContent() + "\n\n" +
+                "Date de publication: " + publication.getDatePub());
+        // Ajoutez un gestionnaire d'événements pour afficher les détails de la publication lorsqu'elle est cliquée
+        publicationTextArea.setOnMouseClicked(event -> {
+            selectedPublication = publication;
+            displayPublicationDetails(publication);
+            displayPublicationComments(publication);
+        });
+        return publicationTextArea;
+    }
+    @FXML
+    private void imprimerPublication() {
+        if (selectedPublication != null) {
+            // Créez une instance de PrinterJob
+            PrinterJob printerJob = PrinterJob.createPrinterJob();
+
+            if (printerJob != null && printerJob.showPrintDialog(null)) {
+                // Imprimez le contenu de la publication sélectionnée
+                boolean success = printerJob.printPage(getSelectedPublicationNode());
+
+                if (success) {
+                    printerJob.endJob(); // Terminez le travail d'impression
+                } else {
+                    System.out.println("Erreur lors de l'impression");
+                }
+            }
+        } else {
+            System.out.println("Aucune publication sélectionnée pour l'impression");
+        }
+    }
+
+    // Méthode utilitaire pour obtenir le nœud représentant la publication sélectionnée
+    private Node getSelectedPublicationNode() {
+        // Créez un TextArea pour afficher la publication sélectionnée
+        TextArea publicationTextArea = new TextArea();
+        publicationTextArea.setEditable(false);
+        publicationTextArea.setWrapText(true);
+        publicationTextArea.setText("Titre: " + selectedPublication.getTitle() + "\n\n" +
+                "Contenu: " + selectedPublication.getContent() + "\n\n" +
+                "Date de publication: " + selectedPublication.getDatePub());
+
+        // Retournez le nœud TextArea
+        return publicationTextArea;
+    }
+    @FXML
+    private void refresh() {
+        loadPublications();
+        txtTitle.clear();
+        txtContent.clear();
+        txtComment.clear();
+        commentBox.getChildren().clear();
     }
 
 

@@ -9,10 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
@@ -73,11 +70,17 @@ public class ComController implements Initializable {
         colIdComment.setCellValueFactory(cellData -> cellData.getValue().idCommentProperty().asObject());
         colDescription.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
         colDateCom.setCellValueFactory(cellData -> cellData.getValue().dateComProperty());
-        colIdPub.setCellValueFactory(cellData -> cellData.getValue().getPub().idPubProperty().asObject());
+        colIdPub.setCellValueFactory(cellData -> {
+            Publication publication = cellData.getValue().getPub();
+            if (publication != null) {
+                return publication.idPubProperty().asObject();
+            } else {
+                // Si la publication est null, retournez une propriété nulle
+                return new SimpleIntegerProperty().asObject();
+            }
+        });
+
     }
-
-
-
 
     @FXML
     void clearField(ActionEvent event) {
@@ -86,6 +89,7 @@ public class ComController implements Initializable {
 
     @FXML
     void createCommentaire(ActionEvent event) {
+        if (validateFields()) {
         // Créez un nouveau commentaire
         Commentaire commentaire = new Commentaire();
 
@@ -112,6 +116,8 @@ public class ComController implements Initializable {
 
         // Mettez à jour l'affichage des commentaires dans la TableView
         showCommentaires();
+            showSuccessAlert("Succès", "Le commentaire a été ajouté avec succès.");
+        }
     }
     private int getPublicationIdFromSource() {
         String publicationIdText = tIdPub.getText();
@@ -150,11 +156,13 @@ public class ComController implements Initializable {
             commentaireService.supprimer(commentaire);
             clear();
             showCommentaires();
+            showSuccessAlert("Succès", "Le commentaire a été supprimé avec succès.");
         }
     }
 
     @FXML
     void updateCommentaire(ActionEvent event) {
+        if (validateFields()) {
         Commentaire commentaire = table.getSelectionModel().getSelectedItem();
         if (commentaire != null) {
             commentaire.setDescription(tDescription.getText());
@@ -173,6 +181,8 @@ public class ComController implements Initializable {
             clear();
             showCommentaires();
         }
+            showSuccessAlert("Succès", "Le commentaire a été mis à jour avec succès.");
+        }
     }
 
 
@@ -181,5 +191,32 @@ public class ComController implements Initializable {
         tDescription.setText(null);
         tDateCom.setText(null);
         btnSave.setDisable(false);
+    }
+
+    // Méthode pour valider les champs
+    private boolean validateFields() {
+        if (tDescription.getText().isEmpty() || tIdPub.getText().isEmpty() || tDateCom.getText().isEmpty()) {
+            showAlert("Erreur", "Veuillez remplir tous les champs obligatoires.");
+            return false;
+        }
+        return true;
+    }
+
+    // Méthode pour afficher une boîte de dialogue d'alerte
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    // Méthode pour afficher une boîte de dialogue de succès
+    private void showSuccessAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

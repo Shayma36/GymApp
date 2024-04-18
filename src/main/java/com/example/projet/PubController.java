@@ -6,16 +6,19 @@ import com.example.projet.Services.ServicePublication;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class PubController implements Initializable {
@@ -38,6 +41,9 @@ public class PubController implements Initializable {
 
     @FXML
     private Button btnUpdate;
+
+    @FXML
+    private Button gererCommentaires;
 
     @FXML
     private TextField tTitle;
@@ -88,12 +94,36 @@ public class PubController implements Initializable {
 
     @FXML
     void createPublication(ActionEvent event) {
-        Publication publication = new Publication();
-        publication.setTitle(tTitle.getText());
-        publication.setContent(tContent.getText());
-        publicationService.ajouter(publication);
-        clear();
-        showPublications();
+        // Vérifier si les champs obligatoires sont vides
+        if (tTitle.getText().isEmpty() || tContent.getText().isEmpty() ) {
+            // Afficher un message d'erreur à l'utilisateur
+            showAlert("Erreur", "Veuillez remplir tous les champs obligatoires.");
+        } else {
+            // Créer la publication
+            Publication publication = new Publication();
+            publication.setTitle(tTitle.getText());
+            publication.setContent(tContent.getText());
+            publicationService.ajouter(publication);
+            // Afficher un message de succès à l'utilisateur
+            showSuccessAlert("Succès", "La publication a été ajoutée avec succès.");
+            // Nettoyer les champs et actualiser la liste des publications
+            clear();
+            showPublications();
+        }
+    }
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+    private void showSuccessAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML
@@ -103,16 +133,15 @@ public class PubController implements Initializable {
             idPub = publication.getIdPub();
             tContent.setText(publication.getContent());
             tTitle.setText(publication.getTitle());
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String formattedDate = dateFormat.format(publication.getDatePub());
-            tDatePub.setText(formattedDate);
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            String formattedDate = dateFormat.format(publication.getDatePub());
+//            tDatePub.setText(formattedDate);
             btnSave.setDisable(true);
         }
     }
 
     void clear() {
         tContent.setText(null);
-        tDatePub.setText(null);
         tTitle.setText(null);
         btnSave.setDisable(false);
 
@@ -120,25 +149,79 @@ public class PubController implements Initializable {
 
     @FXML
     void deletePublication(ActionEvent event) {
+        // Vérifier si une publication est sélectionnée
         Publication publication = table.getSelectionModel().getSelectedItem();
-        if (publication != null) {
-            publicationService.supprimer(publication);
-            clear();
-            showPublications();
+        if (publication == null) {
+            // Afficher un message d'erreur à l'utilisateur
+            showAlert("Erreur", "Veuillez sélectionner une publication à supprimer.");
+        } else {
+            // Afficher une boîte de dialogue de confirmation
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation de suppression");
+            alert.setHeaderText(null);
+            alert.setContentText("Êtes-vous sûr de vouloir supprimer cette publication ?");
+
+            // Attendre la réponse de l'utilisateur
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                // Si l'utilisateur clique sur "OK", supprimer la publication
+                publicationService.supprimer(publication);
+                // Afficher un message de succès à l'utilisateur
+                showSuccessAlert("Succès", "La publication a été supprimée avec succès.");
+                // Nettoyer les champs et actualiser la liste des publications
+                clear();
+                showPublications();
+            }
         }
     }
+
 
 
     @FXML
     void updatePublication(ActionEvent event) {
+        // Vérifier si une publication est sélectionnée
         Publication publication = table.getSelectionModel().getSelectedItem();
-        if (publication != null) {
-            publication.setContent(tContent.getText());
-            publication.setTitle(tTitle.getText());
-            publicationService.modifier(publication);
-            clear();
-            showPublications();
+        if (publication == null) {
+            // Afficher un message d'erreur à l'utilisateur
+            showAlert("Erreur", "Veuillez sélectionner une publication à mettre à jour.");
+        } else {
+            // Vérifier si les champs obligatoires sont vides
+            if (tTitle.getText().isEmpty() || tContent.getText().isEmpty()) {
+                // Afficher un message d'erreur à l'utilisateur
+                showAlert("Erreur", "Veuillez remplir tous les champs obligatoires.");
+            } else {
+                // Mettre à jour la publication
+                publication.setContent(tContent.getText());
+                publication.setTitle(tTitle.getText());
+                publicationService.modifier(publication);
+                // Afficher un message de succès à l'utilisateur
+                showSuccessAlert("Succès", "La publication a été mise à jour avec succès.");
+                // Nettoyer les champs et actualiser la liste des publications
+                clear();
+                showPublications();
+            }
         }
     }
+    @FXML
+    private void gererCommentaires(ActionEvent event) {
+        try {
+            // Charger le fichier FXML Commentaires.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Fxml/Commentaires.fxml"));
+            Parent root = loader.load();
+
+            // Créer une nouvelle scène avec le contenu de Commentaires.fxml
+            Scene scene = new Scene(root);
+
+            // Obtenir la fenêtre principale actuelle à partir de l'événement
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+
+            // Afficher la nouvelle scène dans la fenêtre principale
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace(); // Gérer les erreurs de chargement du fichier FXML
+        }
+    }
+
 }
 

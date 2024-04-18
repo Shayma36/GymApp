@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="338.0" prefWidth="562.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controlleur.ResrvationController">
+   <children>
+      <Text fill="#4a0dd0" layoutX="35.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="insérer votre adresse e-mail " textAlignment="CENTER">
+         <font>
+            <Font size="17.0" />
+         </font></Text>
+      <TextField fx:id="email" layoutX="25.0" layoutY="135.0" onAction="#mailtext" prefHeight="39.0" prefWidth="517.0" />
+      <ButtonBar layoutX="349.0" layoutY="270.0" prefHeight="40.0" prefWidth="200.0">
+        <buttons>
+          <Button fx:id="btnannuler" mnemonicParsing="false" onAction="#annuler" prefHeight="54.0" stylesheets="@../CSS/Style.css" text="annuler" />
+            <Button fx:id="btnvalider" mnemonicParsing="false" onAction="#validation" prefHeight="44.0" stylesheets="@../CSS/Style.css" text="valider" />
+        </buttons>
+      </ButtonBar>
+   </children>
+</AnchorPane>
